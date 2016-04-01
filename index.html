@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script>
+
+	</script>
+</head>
+<body ng-app="ficalc">
+
+	<section ng-controller="CalcController">
+		<div><label for="salary">Salary:</label><input type="text" id="salary" ng-model="figures.salary" ng-change="figures.calculateTotal" /></div>
+		<div><label for="40x">40- contribution:</label><input type="text" id="40x" ng-model="figures.contrib" /></div>
+		<div><label for="principal">Principal:</label><input type="text" id="principal" ng-model="figures.princ" /></div>
+		<div><label for="amt">Annual Amount Invested:</label><input type="text" id="amt" ng-model="figures.invested" /></div>
+		<div><label for="rate">Rate: </label><input type="text" id="rate" ng-model="figures.rate"></div>
+		<div><label for="years">Years to Invest:</label><input type="text" id="years" ng-model="figures.yrs" /></div>
+		<div><label for="total">Total:</label>{{figures.invested * (Math.pow((1+figures.rate/figures.compound), figures.compound*figures.yrs) -1)*figures.compound/figures.rate}}</div>
+	</section>	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular.js"></script>
+	<script src="calc.js"></script>
+</body>
+</html>
