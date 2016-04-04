@@ -21,18 +21,18 @@
 			</div>
 			<div class="row form-inline">
 				<div class="col-xs-8 col-xs-push-2 form-group">
-					<label class="col-md-3 col-sm-3 control-label" for="40x">403 contribution:</label>			
+					<label class="col-md-3 col-sm-3 control-label" for="40x">401/403 contribution:</label>			
 					<div class="input-group col-md-2">
 						<input type="text" id="40x" ng-model="figures.contrib" ng-change="calculatePostTax()" class="form-control" /><div class="input-group-addon">%</div>
 					</div>
 					<div class="clearfix visible-sm-block"></div>
-					<label for="match" class="control-label">Employer Match:</label>
+					<label for="statetax" class="control-label">State Tax:</label>
 					<div class="input-group col-md-2">
-						<input type="text" id="match" ng-model="figures.match" ng-change="calculatePostTax()" class="form-control"><span class="input-group-addon">%</span>
+						<input type="text" id="statetax" ng-model="figures.statetax" ng-change="calculatePostTax()" class="form-control"><span class="input-group-addon">%</span>
 					</div>
 					<label for="" class="control-label">Net Income:</label>
 					<div class="input-group col-md-1" >
-						<span class="form-control-static control-label">{{figures.aftertax | currency}}</span>
+						<span class="form-control-static control-label">{{figures.netincome | currency}}</span>
 					</div>
 
 				</div>
@@ -41,7 +41,7 @@
 				<div class="col-xs-8 col-xs-push-2 form-group">
 					<label class="col-md-3 col-sm-3 control-label">Recommended Investment:</label>
 					<div class="input-group col-md-9">
-						<span class="form-control-static control-label">{{(figures.salary - figures.aftertax) * .8 | currency}} or {{((figures.salary - figures.aftertax) * .8) / 26 | currency}} per paycheck</span>
+						<span class="form-control-static control-label">From {{figures.netincome | currency}}, {{figures.netincome * .8 | currency}} or {{(figures.netincome * .8) / 26 | currency}} per paycheck</span>
 					</div>
 				</div>
 			</div>
