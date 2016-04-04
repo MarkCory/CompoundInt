@@ -8,16 +8,116 @@
 <body ng-app="ficalc">
 
 	<section ng-controller="CalcController">
-		<div><label for="salary">Salary:</label><input type="text" id="salary" ng-model="figures.salary"  /></div>
-		<div><label for="40x">403 contribution:</label><input type="text" id="40x" ng-model="figures.contrib" /></div>
-		<div><label for="principal">Principal:</label><input type="text" id="principal" ng-model="figures.princ" ng-change="calculateTotal()" /></div>
-		<div><label for="amt">Annual Amount Invested:</label><input type="text" id="amt" ng-model="figures.invested" ng-change="calculateTotal()" /></div>
-		<div><label for="rate">Rate: </label><input type="text" id="rate" ng-model="figures.rate"></div>
-		<div><label for="years">Years to Invest:</label><input type="text" id="years" ng-model="figures.yrs" ng-change="calculateTotal()" /></div>
-		<div><label for="total">Annual Investment Total:</label>{{figures.invttl|currency}}</div>
-		<div><label for="principalalone">Principal Alone:</label>{{figures.ttl|currency}}</div>
+		<div class="well container" id="income">
+		<h2 class="text-center">Income Information</h2>
+			<div class="row">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label for="salary" class="col-md-3 col-sm-3">Salary:</label>
+					<div class="input-group">
+						<label for="salary" class="input-group-addon">$</label>
+						<input type="text" id="salary" ng-model="figures.salary" ng-change="calculatePostTax()" class="form-control" />
+					</div>
+				</div>
+			</div>
+			<div class="row form-inline">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3 control-label" for="40x">403 contribution:</label>			
+					<div class="input-group col-md-2">
+						<input type="text" id="40x" ng-model="figures.contrib" ng-change="calculatePostTax()" class="form-control" /><div class="input-group-addon">%</div>
+					</div>
+					<div class="clearfix visible-sm-block"></div>
+					<label for="match" class="control-label">Employer Match:</label>
+					<div class="input-group col-md-2">
+						<input type="text" id="match" ng-model="figures.match" ng-change="calculatePostTax()" class="form-control"><span class="input-group-addon">%</span>
+					</div>
+					<label for="" class="control-label">Net Income:</label>
+					<div class="input-group col-md-1" >
+						<span class="form-control-static control-label">{{figures.aftertax | currency}}</span>
+					</div>
+
+				</div>
+			</div>
+			<div class="row form-inline">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3 control-label">Recommended Investment:</label>
+					<div class="input-group col-md-9">
+						<span class="form-control-static control-label">{{(figures.salary - figures.aftertax) * .8 | currency}} or {{((figures.salary - figures.aftertax) * .8) / 26 | currency}} per paycheck</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container well">
+			<h2 class="text-center">Investment Information</h2>
+			<div class="row">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3 control-label" for="principal">Principal:</label>
+					<div class="col-sm-3 input-group">
+						<span class="input-group-addon">$</span>
+						<input type="text" id="principal" ng-model="figures.princ" ng-change="calculateTotal()" class="col-md-3 col-sm-3 form-control" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3" for="amt">Annual Amount Invested:</label>
+					<div class="col-sm-3 input-group">
+						<span class="input-group-addon">$</span>
+						<input type="text" id="amt" ng-model="figures.invested" ng-change="calculateTotal()" class="col-md-3 col-sm-3 form-control" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3" for="rate">Rate: </label>
+					<div class="col-sm-3 input-group">
+						<input type="text" id="rate" ng-model="figures.rate" class="col-md-3 col-sm-3 form-control">
+						<span class="input-group-addon">%</span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3" for="years">Time to Invest:</label>
+					<div class="col-md-2 col-sm-2 input-group">
+						<input type="text" id="years" ng-model="figures.yrs" ng-change="calculateTotal()" class="form-control" />
+						<span class="input-group-addon initialism"><small>Years</small></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container well">
+			<h2 class="text-center">Result Information</h2>
+			<div class="row">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3" for="total">Total Invested: </label>
+					<span class="col-md-3 col-sm-3">{{figures.plainttl | currency}}</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3" for="total">Total w/ Interest: </label>
+					<span class="col-md-3 col-sm-3">{{figures.invttl| currency}}</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3" for="principalalone">Principal Alone: </label><span class="col-md-3 col-sm-3">{{figures.ttl| currency}}</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3" for="compoundedtotal">Compounded Total: </label><span class="col-md-3 col-sm-3">{{figures.invttl + figures.ttl | currency}}</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-8 col-xs-push-2 form-group">
+					<label class="col-md-3 col-sm-3" for="">Perpetual interest per month: </label><span class="col-md-3 col-sm-3">{{((figures.invttl + figures.ttl) * .04)/12 | currency}}</span>
+				</div>
+			</div>
+		</div>
 	</section>	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular.js"></script>
 	<script src="calc.js"></script>
+	<script src="//localhost:35729/livereload.js"></script>
 </body>
 </html>

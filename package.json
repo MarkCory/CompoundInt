@@ -1,0 +1,28 @@
+{
+  "name": "CompoundInt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "calc.js",
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "express": "^4.13.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.9.1"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarkCory/CompoundInt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarkCory/CompoundInt/issues"
+  },
+  "homepage": "https://github.com/MarkCory/CompoundInt#readme"
+}
