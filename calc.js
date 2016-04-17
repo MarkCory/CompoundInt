@@ -18,18 +18,22 @@ app.controller("CalcController", ['$scope', function($scope){
 		yrs:null, //how many years to invest for
 		ttl:null, //total compounded from principal
 		invttl:null, //compounded total with annual investments
-		plainttl:null,
+		plainttl:null, //total principal contributed
 		roi:null //returned capital relative to no interest	
 	};
 	$scope.calculateTotal = function(){
+		// get the basic amount invested
 		$scope.figures.plainttl = $scope.figures.invested * $scope.figures.yrs;
+		// get the compounded total from annual investments
 		$scope.figures.invttl = $scope.figures.invested * (Math.pow((1+$scope.figures.rate/$scope.figures.compound), $scope.figures.compound*$scope.figures.yrs) -1)*$scope.figures.compound/$scope.figures.rate;
+		// get the compounded total of the initial principal
 		$scope.figures.ttl = $scope.figures.princ * Math.pow((1+$scope.figures.rate/$scope.figures.compound), $scope.figures.compound * $scope.figures.yrs);
 		$scope.$digest;
 		$scope.$apply;
 		console.log($scope.figures)		
 		};
 	$scope.calculatePostTax = function(){
+		// 
 		$scope.figures.assessment = null;
 		$scope.figures.taxable = $scope.figures.salary - ( $scope.figures.salary * ($scope.figures.contrib/100) );
 		var taxBracket = [
@@ -44,31 +48,16 @@ app.controller("CalcController", ['$scope', function($scope){
 			return arr.low < $scope.figures.taxable
 		});
 		userBracket.map(function(bracket, i, arr){
+			//Progressive taxation, loops through each bracket and adds up assessment
 			if(i < arr.length - 1){
-				// console.log("greater than max");
-				// console.log("b:"+bracket+"<br>i:"+i+"<br>arr:"+arr);
 				//push progressive tax for lower brackets to assessments array
 				var bracketMax = parseInt(bracket.high) * (parseInt(bracket.rate)/100);
 				$scope.figures.assessment += bracketMax;
 			}else{
-				// console.log("user's bracket" + bracket);
-				// console.log((parseInt(bracket.rate)/100));
-				var ti = $scope.figures.salary - $scope.figures.assessment;
-				var assessible = (parseInt($scope.figures.salary) - bracket.low) * (parseInt(bracket.rate)/100)
-				$scope.figures.assessment += assessible;
-				// console.log("assessible in lower brackets: "+$scope.figures.assessment);
-				// console.log("assessible in this bracket: "+assessible);
-				//Progressive taxation, loop through previously calculated brackets, then add top bracket assesment on remainder.
-				// var totalAssessment;
-				// console.log("result: "+result);
-				// result.forEach(function(assessment){
-				// 	totalAssessment += assessment;
-				// 	console.log("adding..")
-				// });
-				// console.log(totalAssessment);
-				//assess remainder.
-				// $scope.figures.salary - totalAssessment;
-
+				// User max bracket
+				var ti = $scope.figures.salary - $scope.figures.assessment; //salary minus total lower assessments
+				var assessible = (parseInt($scope.figures.salary) - bracket.low) * (parseInt(bracket.rate)/100) //income above top bracket's low multiplied by top bracket's rate.
+				$scope.figures.assessment += assessible; // add top bracket's tax assessment to total assessment
 			}
 		})
 		$scope.figures.netincome = $scope.figures.taxable - $scope.figures.assessment - ($scope.figures.taxable * ($scope.figures.statetax/100));
