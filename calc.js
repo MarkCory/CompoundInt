@@ -5,6 +5,7 @@ app.controller("CalcController", ['$scope', function($scope){
 	$scope.figures = {
 		salary:null, //gross salary
 		contrib:null, //pre-tax contribution
+		contribamt:null, //the amount set aside by pre-tax contribution
 		taxable:null, //income after pre-tax (401/403) deductions
 		assessment:null, //full income tax assessment
 		statetax:null, //state taxes.
@@ -28,6 +29,7 @@ app.controller("CalcController", ['$scope', function($scope){
 		$scope.figures.invttl = $scope.figures.invested * (Math.pow((1+$scope.figures.rate/$scope.figures.compound), $scope.figures.compound*$scope.figures.yrs) -1)*$scope.figures.compound/$scope.figures.rate;
 		// get the compounded total of the initial principal
 		$scope.figures.ttl = $scope.figures.princ * Math.pow((1+$scope.figures.rate/$scope.figures.compound), $scope.figures.compound * $scope.figures.yrs);
+		$scope.figures.roi = $scope.figures.invttl - ($scope.figures.invested * $scope.figures.yrs);
 		$scope.$digest;
 		$scope.$apply;
 		console.log($scope.figures)		
@@ -36,6 +38,7 @@ app.controller("CalcController", ['$scope', function($scope){
 		// 
 		$scope.figures.assessment = null;
 		$scope.figures.taxable = $scope.figures.salary - ( $scope.figures.salary * ($scope.figures.contrib/100) );
+		$scope.figures.contribamt = $scope.figures.salary * ($scope.figures.contrib/100);
 		var taxBracket = [
 		{low:0, high:9725, rate:10}, 
 		{low:9725, high:37650, rate:15}, 
@@ -45,7 +48,8 @@ app.controller("CalcController", ['$scope', function($scope){
 		{low:413350, high:415050, rate:35}
 		];
 		userBracket = taxBracket.filter(function(arr){
-			return arr.low < $scope.figures.taxable
+			// narrows down taxBracket array to brackets lower than user's taxable income.
+			return arr.low <= $scope.figures.taxable
 		});
 		userBracket.map(function(bracket, i, arr){
 			//Progressive taxation, loops through each bracket and adds up assessment
@@ -55,12 +59,13 @@ app.controller("CalcController", ['$scope', function($scope){
 				$scope.figures.assessment += bracketMax;
 			}else{
 				// User max bracket
-				var ti = $scope.figures.salary - $scope.figures.assessment; //salary minus total lower assessments
 				var assessible = (parseInt($scope.figures.salary) - bracket.low) * (parseInt(bracket.rate)/100) //income above top bracket's low multiplied by top bracket's rate.
 				$scope.figures.assessment += assessible; // add top bracket's tax assessment to total assessment
+
+				//calculate net income
+				$scope.figures.netincome = ($scope.figures.taxable - $scope.figures.assessment) - ($scope.figures.taxable * ($scope.figures.statetax/100));
 			}
-		})
-		$scope.figures.netincome = $scope.figures.taxable - $scope.figures.assessment - ($scope.figures.taxable * ($scope.figures.statetax/100));
+		});
 		// console.log(userBracket);
 		$scope.$digest;
 		$scope.$apply;
